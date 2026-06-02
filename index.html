@@ -2,296 +2,297 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>便携小空调 - 京东全职骑手专属版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友圈便携小空调 - 京东全职骑手专属版</title>
     <style>
+        /* --- 全局样式 --- */
         body {
-            background-color: #f0f2f5;
+            background-color: #f7f9fc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 40px;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .tip {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- 空调主体 (屏幕部分) --- */
+        .ac-unit {
+            width: 320px;
+            height: 160px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        /* 左侧能效标识 */
+        .energy-label {
+            width: 60px;
+            height: 80px;
+            background: linear-gradient(to bottom, #eef2f3, #fff);
+            border: 1px solid #eee;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.8;
+        }
+        .energy-bar {
+            width: 30px;
+            height: 6px;
+            margin: 2px 0;
+            border-radius: 2px;
+        }
+
+        /* 右侧显示屏区域 */
+        .display-area {
+            text-align: right;
+            flex-grow: 1;
+            margin-left: 20px;
+            opacity: 0.3; /* 默认关机状态比较暗 */
+            transition: opacity 0.3s;
+        }
+
+        .mode-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+
+        .temperature {
+            font-size: 48px;
+            font-weight: 300;
+            color: #333;
+            line-height: 1;
+        }
+
+        .unit {
+            font-size: 20px;
+            vertical-align: top;
+        }
+
+        /* 运行指示灯 */
+        .status-light {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            width: 8px;
+            height: 8px;
+            background-color: #ddd;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        /* --- 出风口动画 --- */
+        .vents {
+            display: flex;
+            justify-content: space-around;
+            width: 300px;
+            margin-top: 20px;
+        }
+        .vent-line {
+            width: 4px;
+            height: 30px;
+            background-color: #ccc;
+            transform: skewX(-10deg);
+            transition: all 0.5s;
+        }
+
+        /* --- 控制面板 (按钮) --- */
+        .controls {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.1s, filter 0.2s;
         }
-        .ac-unit {
-            width: 80vw;
-            max-width: 320px;
-            height: 120px;
-            background: linear-gradient(to bottom, #ffffff, #f0f0f0);
-            border-radius: 15px 15px 40px 40px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            position: relative;
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:disabled {
+            filter: grayscale(100%);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* 按钮特定颜色 */
+        .btn-cool { background-color: #4a6ee0; } /* 蓝色 */
+        .btn-power { background-color: #5cb85c; } /* 绿色 */
+        .btn-heat { background-color: #f0ad4e; } /* 橙色 */
+        .btn-temp { background-color: #e0e0e0; color: #555; width: 50px; height: 50px;} /* 灰色 */
+
+        /* --- 激活状态的样式类 --- */
+        .ac-unit.on .display-area {
+            opacity: 1;
+        }
+        .ac-unit.on .status-light {
+            background-color: #5cb85c; /* 绿灯亮 */
+            box-shadow: 0 0 5px #5cb85c;
+        }
+        .ac-unit.on .vent-line {
+            background-color: #aaa;
+            height: 40px; /* 出风变长 */
+        }
+
+        /* 底部版权 */
+        footer {
+            margin-top: auto;
             padding: 20px;
-            box-sizing: border-box;
-            z-index: 10;
+            font-size: 12px;
+            color: #999;
         }
-        .logo {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            font-size: 14px;
-            color: #ccc;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .display {
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 32px;
-            color: #333;
-            opacity: 0.2;
-            transition: all 0.3s;
-        }
-        .display.on {
-            color: #00ff00;
-            opacity: 1;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-        }
-        
-        /* --- 导风板与扫风动画 --- */
-        .vent {
-            position: absolute;
-            bottom: 15px;
-            left: 20px;
-            right: 20px;
-            height: 10px;
-            background-color: #ddd;
-            border-radius: 5px;
-            transition: transform 0.5s;
-            transform-origin: top;
-            z-index: 11;
-            overflow: hidden;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        .vent.open {
-            transform: rotateX(45deg);
-            background-color: #333;
-        }
-        .vertical-blades {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            justify-content: space-around;
-        }
-        .blade {
-            width: 4px;
-            height: 100%;
-            background-color: #555;
-            border-radius: 2px;
-            transform-origin: center;
-        }
-        /* 上下扫风 */
-        @keyframes swingVertical {
-            0%, 100% { transform: rotateX(45deg); }
-            50% { transform: rotateX(70deg); }
-        }
-        .vent.swing-up-down {
-            animation: swingVertical 3s ease-in-out infinite;
-        }
-        /* 左右扫风 */
-        @keyframes swingHorizontal {
-            0%, 100% { transform: rotateY(-25deg); }
-            50% { transform: rotateY(25deg); }
-        }
-        .vent.swing-left-right .blade {
-            animation: swingHorizontal 2.5s ease-in-out infinite;
-        }
-        .vent.swing-left-right .blade:nth-child(2) { animation-delay: 0.1s; }
-        .vent.swing-left-right .blade:nth-child(3) { animation-delay: 0.2s; }
-        .vent.swing-left-right .blade:nth-child(4) { animation-delay: 0.3s; }
-        .vent.swing-left-right .blade:nth-child(5) { animation-delay: 0.2s; }
-        .vent.swing-left-right .blade:nth-child(6) { animation-delay: 0.1s; }
-
-        /* --- 虚线出风特效 --- */
-        .wind-container {
-            position: absolute;
-            bottom: -90px;
-            left: 40px;
-            right: 40px;
-            height: 100px;
-            display: flex;
-            justify-content: space-between;
-            opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .wind-container.blowing {
-            opacity: 1;
-        }
-        .wind-line {
-            width: 2px;
-            height: 100%;
-            background: radial-gradient(circle, rgba(0, 191, 255, 0.6) 1px, transparent 1px);
-            background-size: 4px 10px;
-            opacity: 0;
-        }
-        @keyframes windFlow {
-            0% { transform: translateY(-20px); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.4; }
-            100% { transform: translateY(80px); opacity: 0; }
+        footer a {
+            color: #4a6ee0;
+            text-decoration: none;
         }
 
-        /* 遥控器 */
-        .remote {
-            margin-top: 60px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            display: flex;
-            gap: 10px;
-            width: 80vw;
-            max-width: 320px;
-            box-sizing: border-box;
-            flex-wrap: wrap;
-        }
-        button {
-            flex: 1;
-            min-width: 60px;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: transform 0.1s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        button:active { transform: scale(0.95); }
-        .btn-power { background-color: #ff4d4f; color: white; }
-        .btn-temp { background-color: #1890ff; color: white; }
-        .btn-swing { background-color: #faad14; color: white; }
     </style>
 </head>
 <body>
 
-    <div style="display: flex; flex-direction: column; align-items: center;">
-        <div class="ac-unit">
-            <div class="logo">COOL SUMMER</div>
-            <div class="display" id="display">26°C</div>
-            <!-- 整合了扫风叶片的出风口结构 -->
-            <div class="vent" id="vent">
-                <div class="vertical-blades">
-                    <div class="blade"></div><div class="blade"></div><div class="blade"></div>
-                    <div class="blade"></div><div class="blade"></div><div class="blade"></div><div class="blade"></div>
-                </div>
-            </div>
-            <div class="wind-container" id="windContainer"></div>
+    <h1>便携小空调</h1>
+    <div class="tip">💡 Tip: 为你的夏日带来清凉！</div>
+
+    <!-- 空调机身 -->
+    <div class="ac-unit" id="acUnit">
+        <!-- 左侧装饰图 -->
+        <div class="energy-label">
+            <div class="energy-bar" style="background:#5cb85c"></div>
+            <div class="energy-bar" style="background:#f0ad4e"></div>
+            <div class="energy-bar" style="background:#d9534f"></div>
+            <div style="font-size:8px; margin-top:5px; color:#999;">ENERGY</div>
         </div>
 
-        <div class="remote">
-            <button class="btn-power" onclick="togglePower()">电源</button>
-            <button class="btn-temp" onclick="changeTemp(-1)">降温❄️</button>
-            <button class="btn-temp" onclick="changeTemp(1)">升温☀️</button>
-            <button class="btn-swing" onclick="toggleSwing()">扫风</button>
+        <!-- 右侧显示区 -->
+        <div class="display-area">
+            <div class="mode-icon" id="modeIcon">❄️</div>
+            <div class="temperature">
+                <span id="tempDisplay">16</span><span class="unit">°C</span>
+            </div>
+        </div>
+
+        <!-- 运行指示灯 -->
+        <div class="status-light"></div>
+    </div>
+
+    <!-- 出风口装饰 -->
+    <div class="vents">
+        <div class="vent-line"></div>
+        <div class="vent-line"></div>
+        <div class="vent-line"></div>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="controls">
+        <div class="row">
+            <button class="btn-cool" onclick="setMode('cool')" title="制冷">❄️</button>
+            <button class="btn-power" onclick="togglePower()" title="开关">⏻</button>
+            <button class="btn-heat" onclick="setMode('heat')" title="制热">☀️</button>
+        </div>
+        <div class="row">
+            <button class="btn-temp" onclick="changeTemp(1)" title="升温">∧</button>
+        </div>
+        <div class="row">
+            <button class="btn-temp" onclick="changeTemp(-1)" title="降温">∨</button>
         </div>
     </div>
 
+    <footer>
+        2026 © Air Conditioner - <a href="#">我想你了</a>
+    </footer>
+
     <script>
+        // 初始化状态
         let isOn = false;
-        let temperature = 26;
-        let swingMode = 0; // 0:关闭, 1:上下, 2:左右, 3:全扫
-        let windAudio = null;
+        let currentTemp = 16;
+        let mode = 'cool'; // 'cool' or 'heat'
 
-        const display = document.getElementById('display');
-        const vent = document.getElementById('vent');
-        const windContainer = document.getElementById('windContainer');
+        const acUnit = document.getElementById('acUnit');
+        const tempDisplay = document.getElementById('tempDisplay');
+        const modeIcon = document.getElementById('modeIcon');
 
-        // 初始化虚线风
-        const windLineCount = 15;
-        const windLines = [];
-        for (let i = 0; i < windLineCount; i++) {
-            const line = document.createElement('div');
-            line.className = 'wind-line';
-            windContainer.appendChild(line);
-            windLines.push(line);
-        }
-
-        // 初始化在线白噪音音频
-        function initAudio() {
-            if (!windAudio) {
-                // 使用在线免版权白噪音素材模拟风声
-                windAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3');
-                windAudio.loop = true;
-            }
-        }
-
-        // 核心：根据温度更新风速和音量
-        function updateWindEffect() {
-            if (!isOn) return;
-            // 温度越高，风速越快（动画时长越短）
-            const speed = 2.5 - ((temperature - 16) / (31 - 16)) * 1.9;
-            windLines.forEach(line => {
-                const currentDelay = line.style.animationDelay || '0s';
-                line.style.animation = `windFlow ${speed}s linear infinite ${currentDelay}`;
-            });
-            // 温度越高，音量越大
-            if (windAudio) {
-                const volume = 0.2 + ((temperature - 16) / (31 - 16)) * 0.8;
-                windAudio.volume = Math.min(volume, 1.0);
-            }
-        }
-
-        function playBeep() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioContext.state === 'suspended') audioContext.resume();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.1);
-        }
-
+        // 开关机功能
         function togglePower() {
             isOn = !isOn;
-            playBeep();
-            initAudio();
-
             if (isOn) {
-                display.classList.add('on');
-                vent.classList.add('open');
-                windContainer.classList.add('blowing');
-                windAudio.play();
-                updateWindEffect();
+                acUnit.classList.add('on');
             } else {
-                display.classList.remove('on');
-                vent.classList.remove('open', 'swing-up-down', 'swing-left-right');
-                windContainer.classList.remove('blowing');
-                windAudio.pause();
-                swingMode = 0; // 关机重置扫风状态
+                acUnit.classList.remove('on');
             }
         }
 
-        function toggleSwing() {
-            if (!isOn) return;
-            playBeep();
-            swingMode = (swingMode + 1) % 4;
-            vent.classList.remove('swing-up-down', 'swing-left-right');
-            
-            if (swingMode === 1) vent.classList.add('swing-up-down');
-            else if (swingMode === 2) vent.classList.add('swing-left-right');
-            else if (swingMode === 3) vent.classList.add('swing-up-down', 'swing-left-right');
+        // 设置模式（制冷/制热）
+        function setMode(newMode) {
+            if (!isOn) return; // 没开机不能调模式
+
+            mode = newMode;
+            if (mode === 'cool') {
+                modeIcon.innerText = '❄️';
+                // 可以在这里添加改变背景色等逻辑
+            } else {
+                modeIcon.innerText = '☀️';
+            }
         }
 
+        // 调节温度
         function changeTemp(delta) {
-            if (!isOn) return;
-            temperature += delta;
-            if (temperature < 16) temperature = 16;
-            if (temperature > 31) temperature = 31;
-            display.innerText = temperature + '°C';
-            playBeep();
-            updateWindEffect();
+            if (!isOn) return; // 没开机不能调温
+
+            currentTemp += delta;
+
+            // 限制温度范围，比如 16度 - 30度
+            if (currentTemp < 16) currentTemp = 16;
+            if (currentTemp > 30) currentTemp = 30;
+
+            tempDisplay.innerText = currentTemp;
         }
     </script>
 </body>
