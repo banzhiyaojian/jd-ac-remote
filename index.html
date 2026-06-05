@@ -3,228 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极简文字修仙 (带存档)</title>
+    <title>极简文字修仙：全能版</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Microsoft YaHei', sans-serif; background-color: #f4f4f9; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        :root { --primary: #d35400; --bg: #f4f4f9; --card: #fff; --dark: #2c3e50; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
+        body { background: var(--bg); color: #333; display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
         
-        .game-container { width: 400px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
-        h1 { font-size: 24px; margin-bottom: 15px; color: #d35400; }
+        .game-container { width: 100%; max-width: 480px; background: var(--card); border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 90vh; }
         
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; font-size: 14px; text-align: left; }
-        .stat-item { background: #ecf0f1; padding: 8px; border-radius: 4px; }
-        .stat-label { font-weight: bold; color: #7f8c8d; }
+        /* 顶部信息栏 */
+        .header { padding: 15px; background: var(--dark); color: #fff; text-align: center; }
+        .header h1 { font-size: 18px; margin-bottom: 5px; }
+        .stats-row { display: flex; justify-content: space-around; font-size: 12px; opacity: 0.9; }
         
-        .progress-bar { width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-bottom: 15px; position: relative; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #f39c12, #e67e22); transition: width 0.3s ease; width: 0%; }
-        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: bold; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        /* 标签页导航 */
+        .tabs { display: flex; background: #eee; border-bottom: 1px solid #ddd; }
+        .tab-btn { flex: 1; padding: 10px 0; border: none; background: none; cursor: pointer; font-size: 13px; color: #666; transition: all 0.2s; }
+        .tab-btn.active { background: var(--card); color: var(--primary); font-weight: bold; border-bottom: 2px solid var(--primary); }
         
-        .action-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
-        button { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; transition: opacity 0.2s; }
+        /* 内容区域 */
+        .content { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .panel { display: none; flex-direction: column; gap: 10px; }
+        .panel.active { display: flex; }
+        
+        /* 通用卡片样式 */
+        .card { background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.5; }
+        .card-title { font-weight: bold; color: var(--primary); margin-bottom: 5px; display: flex; justify-content: space-between; }
+        
+        /* 按钮组 */
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+        button { padding: 8px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; color: #fff; transition: opacity 0.2s; }
         button:hover { opacity: 0.85; }
-        .btn-cultivate { background-color: #3498db; color: #fff; }
-        .btn-explore { background-color: #2ecc71; color: #fff; }
-        .btn-breakthrough { background-color: #9b59b6; color: #fff; }
-        .btn-reset { background-color: #e74c3c; color: #fff; margin-top: 10px; font-size: 12px; padding: 8px;}
-        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        button:disabled { background: #ccc !important; cursor: not-allowed; }
+        .btn-primary { background: #3498db; }
+        .btn-success { background: #2ecc71; }
+        .btn-danger { background: #e74c3c; }
+        .btn-warning { background: #f39c12; }
+        .btn-purple { background: #9b59b6; }
         
-        .log-area { height: 120px; background: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-size: 13px; line-height: 1.6; overflow-y: auto; text-align: left; }
+        /* 日志区 */
+        .log-area { height: 120px; background: var(--dark); color: #ecf0f1; padding: 10px; border-radius: 8px; font-size: 12px; line-height: 1.6; overflow-y: auto; margin-top: auto; }
+        
+        /* 进度条 */
+        .progress-wrap { height: 16px; background: #e0e0e0; border-radius: 8px; overflow: hidden; position: relative; margin: 5px 0; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #f39c12, #e67e22); transition: width 0.3s; }
+        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10px; font-weight: bold; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+
+        /* 列表项 */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #fff; border: 1px solid #eee; border-radius: 6px; font-size: 12px; }
+        .list-item span { color: #888; }
     </style>
 </head>
 <body>
 
 <div class="game-container">
-    <h1>⚔️ 极简文字修仙</h1>
-    
-    <!-- 角色状态面板 -->
-    <div class="stats-grid">
-        <div class="stat-item"><span class="stat-label">境界：</span><span id="realm">炼气一层</span></div>
-        <div class="stat-item"><span class="stat-label">修为：</span><span id="exp">0 / 100</span></div>
-        <div class="stat-item"><span class="stat-label">攻击：</span><span id="atk">10</span></div>
-        <div class="stat-item"><span class="stat-label">防御：</span><span id="def">5</span></div>
+    <div class="header">
+        <h1>⚔️ 极简文字修仙</h1>
+        <div class="stats-row">
+            <span id="ui-realm">炼气一层</span>
+            <span id="ui-hp">气血: 100/100</span>
+            <span id="ui-atk">攻: 10</span>
+            <span id="ui-def">防: 5</span>
+        </div>
+        <div class="progress-wrap" style="margin-top:8px;">
+            <div class="progress-bar" id="ui-exp-bar" style="width:0%"></div>
+            <div class="progress-text" id="ui-exp-text">0 / 100</div>
+        </div>
     </div>
-    
-    <!-- 修炼进度条 -->
-    <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-        <div class="progress-text" id="progressText">0%</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('main')">修炼</button>
+        <button class="tab-btn" onclick="switchTab('craft')">炼制</button>
+        <button class="tab-btn" onclick="switchTab('bag')">背包</button>
+        <button class="tab-btn" onclick="switchTab('bestiary')">图鉴</button>
     </div>
-    
-    <!-- 操作按钮 -->
-    <div class="action-buttons">
-        <button class="btn-cultivate" id="cultivateBtn" onclick="toggleCultivate()">开始打坐</button>
-        <button class="btn-explore" onclick="explore()">探索秘境</button>
+
+    <div class="content">
+        <!-- 主界面 -->
+        <div id="panel-main" class="panel active">
+            <div class="card">
+                <div class="card-title">洞府修炼</div>
+                <p>盘膝而坐，吞吐天地灵气。</p>
+                <div class="btn-group">
+                    <button class="btn-primary" id="btn-cultivate" onclick="toggleCultivate()">开始打坐</button>
+                    <button class="btn-success" onclick="explore()">探索秘境</button>
+                </div>
+                <div class="btn-group" style="margin-top:5px;">
+                    <button class="btn-purple" id="btn-breakthrough" onclick="breakthrough()" disabled>尝试突破</button>
+                    <button class="btn-danger" onclick="resetGame()" style="font-size:11px; opacity:0.8;">重置存档</button>
+                </div>
+            </div>
+            <div class="card" id="combat-panel" style="display:none; border-color:#e74c3c;">
+                <div class="card-title" style="color:#e74c3c;">⚔️ 战斗进行中</div>
+                <p id="combat-info"></p>
+                <div class="btn-group">
+                    <button class="btn-danger" onclick="playerAttack()">普通攻击</button>
+                    <button class="btn-warning" onclick="tryCapture()">尝试捕捉</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 炼制界面 -->
+        <div id="panel-craft" class="panel">
+            <div class="card">
+                <div class="card-title">🧪 炼丹炉</div>
+                <p>消耗 3 株【灵草】炼制【回春丹】</p>
+                <p style="font-size:11px; color:#888;">效果：恢复 50 气血，或作为突破辅助</p>
+                <button class="btn-success" style="width:100%; margin-top:8px;" onclick="craftPill()">开炉炼丹</button>
+            </div>
+            <div class="card">
+                <div class="card-title">🔨 炼器台</div>
+                <p>消耗 3 块【玄铁】锻造【精铁剑】</p>
+                <p style="font-size:11px; color:#888;">效果：永久增加 5 点攻击力</p>
+                <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="craftWeapon()">挥锤锻造</button>
+            </div>
+        </div>
+
+        <!-- 背包界面 -->
+        <div id="panel-bag" class="panel">
+            <div class="card">
+                <div class="card-title">🎒 物品栏</div>
+                <div id="bag-list" style="display:flex; flex-direction:column; gap:5px; margin-top:8px;"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">🗡️ 当前装备</div>
+                <div id="equip-info" style="font-size:12px; color:#666;">无</div>
+            </div>
+        </div>
+
+        <!-- 图鉴界面 -->
+        <div id="panel-bestiary" class="panel">
+            <div class="card">
+                <div class="card-title">📖 妖兽图鉴 (<span id="bestiary-count">0</span>/5)</div>
+                <div id="bestiary-list" style="display:flex; flex-direction:column; gap:5px; margin-top:8px;"></div>
+            </div>
+        </div>
     </div>
-    <div class="action-buttons">
-        <button class="btn-breakthrough" id="breakthroughBtn" onclick="breakthrough()" disabled>尝试突破</button>
-    </div>
-    
-    <!-- 消息日志 -->
-    <div class="log-area" id="logArea">欢迎来到修仙世界！点击【开始打坐】获取修为。</div>
-    
-    <!-- 重置存档按钮 -->
-    <button class="btn-reset" onclick="resetGame()">重置存档</button>
+
+    <div class="log-area" id="logArea">系统：欢迎道友，点击【探索秘境】开启机缘！</div>
 </div>
 
 <script>
-    // JS 核心逻辑
-    const realms = ["炼气一层", "炼气二层", "炼气三层", "筑基期"]; 
-    const SAVE_KEY = 'xiuxian_save'; // 统一的存档键名
-    
-    // 默认初始状态
+    // ==================== 配置与常量 ====================
+    const SAVE_KEY = 'xiuxian_full_save';
+    const REALMS = ["炼气一层", "炼气二层", "筑基期", "金丹期"];
+    const MONSTERS = [
+        { name: "灵田鼠", hp: 30, atk: 5, exp: 10, drop: "灵草", rate: 0.8 },
+        { name: "铁皮猪", hp: 60, atk: 8, exp: 20, drop: "玄铁", rate: 0.6 },
+        { name: "风刃狼", hp: 100, atk: 15, exp: 40, drop: "灵草", rate: 0.4 },
+        { name: "赤炎蟒", hp: 180, atk: 25, exp: 80, drop: "玄铁", rate: 0.2 },
+        { name: "幽冥鬼将", hp: 300, atk: 40, exp: 150, drop: "灵草", rate: 0.1 }
+    ];
+
+    // ==================== 状态管理 ====================
     const defaultState = {
-        realmIndex: 0,
-        exp: 0,
-        maxExp: 100,
-        atk: 10,
-        def: 5,
-        isCultivating: false
+        realmIndex: 0, exp: 0, maxExp: 100,
+        baseAtk: 10, baseDef: 5, hp: 100, maxHp: 100,
+        isCultivating: false,
+        bag: { "灵草": 0, "玄铁": 0, "回春丹": 0 },
+        equipAtk: 0, equipDef: 0,
+        bestiary: [], // 存储已捕获妖兽的名字
+        combat: null // 当前战斗对象 { monster, currentHp }
     };
 
-    let state = loadGame(); // 启动时加载存档
+    let state = loadGame();
     let cultivateTimer = null;
 
-    // DOM 元素获取
-    const ui = {
-        realm: document.getElementById('realm'),
-        exp: document.getElementById('exp'),
-        atk: document.getElementById('atk'),
-        def: document.getElementById('def'),
-        progressFill: document.getElementById('progressFill'),
-        progressText: document.getElementById('progressText'),
-        logArea: document.getElementById('logArea'),
-        cultivateBtn: document.getElementById('cultivateBtn'),
-        breakthroughBtn: document.getElementById('breakthroughBtn')
-    };
+    // ==================== 核心工具函数 ====================
+    function getAtk() { return state.baseAtk + state.equipAtk; }
+    function getDef() { return state.baseDef + state.equipDef; }
 
-    // ==================== 存档系统核心函数 ====================
-    
-    // 保存游戏进度
+    function log(msg) {
+        const el = document.getElementById('logArea');
+        el.innerHTML += `<div>${new Date().toLocaleTimeString().slice(0,5)} ${msg}</div>`;
+        el.scrollTop = el.scrollHeight;
+    }
+
     function saveGame() {
         try {
-            // 如果正在挂机，不保存挂机状态，防止刷新后立刻触发定时器
-            const dataToSave = { ...state, isCultivating: false }; 
-            localStorage.setItem(SAVE_KEY, JSON.stringify(dataToSave));
-        } catch (e) {
-            console.error("存档失败:", e);
-        }
+            const data = JSON.parse(JSON.stringify(state));
+            data.isCultivating = false; // 不保存挂机状态
+            localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+        } catch(e) { console.error(e); }
     }
 
-    // 读取游戏进度
     function loadGame() {
         try {
-            const savedData = localStorage.getItem(SAVE_KEY);
-            if (savedData) {
-                const parsedData = JSON.parse(savedData);
-                // 简单校验关键字段是否存在，缺失则用默认值填充
-                return { ...defaultState, ...parsedData };
-            }
-        } catch (e) {
-            console.error("读档失败，将使用默认数据:", e);
-        }
-        return { ...defaultState };
+            const d = localStorage.getItem(SAVE_KEY);
+            return d ? { ...defaultState, ...JSON.parse(d) } : { ...defaultState };
+        } catch(e) { return { ...defaultState }; }
     }
 
-    // 重置游戏
     function resetGame() {
-        if(confirm("确定要清除所有修仙进度吗？此操作不可恢复！")) {
+        if(confirm("确定要废除修为，重入轮回吗？")) {
             localStorage.removeItem(SAVE_KEY);
-            location.reload(); // 重新加载页面以应用默认状态
+            location.reload();
         }
     }
 
-    // ========================================================
-
-    // 更新 UI 界面
+    // ==================== UI 渲染引擎 ====================
     function updateUI() {
-        ui.realm.textContent = realms[state.realmIndex];
-        ui.exp.textContent = `${state.exp} / ${state.maxExp}`;
-        ui.atk.textContent = state.atk;
-        ui.def.textContent = state.def;
+        // 基础属性
+        document.getElementById('ui-realm').textContent = REALMS[state.realmIndex];
+        document.getElementById('ui-hp').textContent = `气血: ${state.hp}/${state.maxHp}`;
+        document.getElementById('ui-atk').textContent = `攻: ${getAtk()}`;
+        document.getElementById('ui-def').textContent = `防: ${getDef()}`;
         
-        const percent = Math.min((state.exp / state.maxExp) * 100, 100).toFixed(1);
-        ui.progressFill.style.width = `${percent}%`;
-        ui.progressText.textContent = `${percent}%`;
-        
-        ui.breakthroughBtn.disabled = state.exp < state.maxExp;
-        
-        // 每次数据变动都自动保存
-        saveGame(); 
-    }
+        // 经验条
+        const pct = Math.min((state.exp / state.maxExp) * 100, 100).toFixed(1);
+        document.getElementById('ui-exp-bar').style.width = `${pct}%`;
+        document.getElementById('ui-exp-text').textContent = `${state.exp} / ${state.maxExp}`;
+        document.getElementById('btn-breakthrough').disabled = state.exp < state.maxExp;
 
-    // 打印日志
-    function log(message) {
-        ui.logArea.innerHTML += `<div>${new Date().toLocaleTimeString()} - ${message}</div>`;
-        ui.logArea.scrollTop = ui.logArea.scrollHeight; 
-    }
+        // 挂机按钮
+        const btnCult = document.getElementById('btn-cultivate');
+        btnCult.textContent = state.isCultivating ? "停止打坐" : "开始打坐";
+        btnCult.className = state.isCultivating ? "btn-danger" : "btn-primary";
 
-    // 挂机修炼逻辑
-    function toggleCultivate() {
-        if (state.isCultivating) {
-            clearInterval(cultivateTimer);
-            state.isCultivating = false;
-            ui.cultivateBtn.textContent = "开始打坐";
-            log("你停止了打坐，退出修炼状态。");
+        // 战斗面板
+        const combatPanel = document.getElementById('combat-panel');
+        if (state.combat) {
+            combatPanel.style.display = 'block';
+            document.getElementById('combat-info').textContent = 
+                `${state.combat.name} (HP: ${state.combat.currentHp}) | 你 (HP: ${state.hp})`;
         } else {
-            state.isCultivating = true;
-            ui.cultivateBtn.textContent = "停止打坐";
-            log("你盘膝而坐，开始吸收天地灵气...");
+            combatPanel.style.display = 'none';
+        }
+
+        // 背包渲染
+        const bagList = document.getElementById('bag-list');
+        bagList.innerHTML = '';
+        for (const [item, count] of Object.entries(state.bag)) {
+            bagList.innerHTML += `<div class="list-item"><span>${item}</span><span>x${count}</span></div>`;
+        }
+        document.getElementById('equip-info').textContent = 
+            state.equipAtk > 0 ? `精铁剑 (攻击+${state.equipAtk})` : "无装备";
+
+        // 图鉴渲染
+        const bList = document.getElementById('bestiary-list');
+        bList.innerHTML = '';
+        document.getElementById('bestiary-count').textContent = state.bestiary.length;
+        MONSTERS.forEach(m => {
+            const found = state.bestiary.includes(m.name);
+            bList.innerHTML += `<div class="list-item" style="opacity:${found?1:0.4}">
+                <span>${found ? m.name : "???"}</span>
+                <span>${found ? `攻:${m.atk} 掉:${m.drop}` : "未收录"}</span>
+            </div>`;
+        });
+
+        saveGame();
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(`panel-${tabName}`).classList.add('active');
+        event.target.classList.add('active');
+        updateUI();
+    }
+
+    // ==================== 玩法逻辑 ====================
+
+    // 1. 挂机修炼
+    function toggleCultivate() {
+        if (state.combat) { log("战斗中无法打坐！"); return; }
+        state.isCultivating = !state.isCultivating;
+        if (state.isCultivating) {
+            log("你进入忘我之境，灵气汇聚...");
             cultivateTimer = setInterval(() => {
                 state.exp += 5;
                 if (state.exp >= state.maxExp) {
                     state.exp = state.maxExp;
-                    log("✨ 你的修为已满，可以尝试突破了！");
-                    toggleCultivate(); 
+                    log("✨ 修为圆满，可以尝试突破了！");
+                    toggleCultivate();
                 }
                 updateUI();
             }, 1000);
+        } else {
+            clearInterval(cultivateTimer);
+            log("你退出修炼状态。");
         }
         updateUI();
     }
 
-    // 探索秘境
+    // 2. 探索与遇敌
     function explore() {
-        if (state.isCultivating) {
-            log("⚠️ 正在打坐中，无法分心探索秘境！");
-            return;
+        if (state.isCultivating || state.combat) {
+            log("当前状态无法探索！"); return;
         }
-        const events = [
-            "你在草丛中发现了一株灵草，修为+10！",
-            "遇到了一只低阶妖兽，经过一番苦战将其击退，获得少量修为。",
-            "你意外跌入一个隐秘洞穴，发现前辈留下的功法，攻击+2！",
-            "什么都没发生，只吹了一阵冷风。"
-        ];
-        const randomEvent = events[Math.floor(Math.random() * events.length)];
-        log(randomEvent);
         
-        if (randomEvent.includes("灵草")) state.exp += 10;
-        if (randomEvent.includes("功法")) state.atk += 2;
-        if (randomEvent.includes("妖兽")) state.exp += 3;
+        // 随机事件权重
+        const rand = Math.random();
+        if (rand < 0.5) {
+            // 遇怪 (根据境界调整概率)
+            const availableMonsters = MONSTERS.filter((_, i) => i <= state.realmIndex + 1);
+            const monster = availableMonsters[Math.floor(Math.random() * availableMonsters.length)];
+            state.combat = { ...monster, currentHp: monster.hp };
+            log(`⚠️ 你在秘境中遭遇了【${monster.name}】！`);
+        } else if (rand < 0.8) {
+            // 捡材料
+            const items = ["灵草", "玄铁"];
+            const item = items[Math.floor(Math.random() * items.length)];
+            state.bag[item]++;
+            log(`🍀 运气不错，捡到了一株【${item}】。`);
+        } else {
+            log("🌬️ 秘境一片荒芜，只吹过一阵冷风。");
+        }
         updateUI();
     }
 
-    // 境界突破
-    function breakthrough() {
-        if (state.exp < state.maxExp) return;
-        if (state.realmIndex >= realms.length - 1) {
-            log("🎉 恭喜你已达到当前版本最高境界！");
-            return;
+    // 3. 战斗系统
+    function playerAttack() {
+        if (!state.combat) return;
+        const dmg = Math.max(1, getAtk() - Math.floor(state.combat.atk * 0.2)); // 简单减伤
+        state.combat.currentHp -= dmg;
+        log(`你挥出一击，造成 ${dmg} 点伤害！`);
+
+        if (state.combat.currentHp <= 0) {
+            endCombat(true);
+        } else {
+            // 怪物反击
+            const monDmg = Math.max(1, state.combat.atk - getDef());
+            state.hp -= monDmg;
+            log(`${state.combat.name} 反击，你受到 ${monDmg} 点伤害。`);
+            if (state.hp <= 0) endCombat(false);
         }
+        updateUI();
+    }
+
+    function tryCapture() {
+        if (!state.combat) return;
+        const hpRatio = state.combat.currentHp / state.combat.hp;
+        const chance = (1 - hpRatio) * 0.8 + 0.1; // 血越少越好抓
         
+        if (Math.random() < chance) {
+            log(`🎉 成功捕获【${state.combat.name}】！已录入图鉴。`);
+            if (!state.bestiary.includes(state.combat.name)) {
+                state.bestiary.push(state.combat.name);
+            }
+            endCombat(true, true); // 捕获视为胜利
+        } else {
+            log("❌ 捕捉失败！妖兽挣脱了绳索。");
+            // 失败后怪物必反击
+            const monDmg = Math.max(1, state.combat.atk - getDef());
+            state.hp -= monDmg;
+            log(`${state.combat.name} 趁机攻击，你受到 ${monDmg} 点伤害。`);
+            if (state.hp <= 0) endCombat(false);
+        }
+        updateUI();
+    }
+
+    function endCombat(win, captured = false) {
+        if (win) {
+            state.exp += state.combat.exp;
+            log(`✅ 战斗胜利！获得修为 ${state.combat.exp}。`);
+            // 掉落材料
+            if (Math.random() < state.combat.rate) {
+                state.bag[state.combat.drop]++;
+                log(`🎁 获得战利品：【${state.combat.drop}】`);
+            }
+        } else {
+            log("💀 你被击败了... 幸好有护身玉符，勉强逃回洞府。");
+            state.hp = Math.floor(state.maxHp * 0.5); // 复活给一半血
+        }
+        state.combat = null;
+        updateUI();
+    }
+
+    // 4. 突破
+    function breakthrough() {
+        if (state.exp < state.maxExp || state.combat) return;
+        if (state.realmIndex >= REALMS.length - 1) {
+            log("🏆 你已是当世巅峰，无需再突破！"); return;
+        }
         state.realmIndex++;
         state.exp = 0;
-        state.maxExp = Math.floor(state.maxExp * 1.5); 
-        state.atk += 5;
-        state.def += 3;
-        
-        log(`🌟 轰隆一声！你成功突破至【${realms[state.realmIndex]}】！全属性提升！`);
+        state.maxExp = Math.floor(state.maxExp * 2);
+        state.baseAtk += 10;
+        state.baseDef += 5;
+        state.maxHp += 50;
+        state.hp = state.maxHp; // 突破满血
+        log(`🌟 天降异象！恭喜突破至【${REALMS[state.realmIndex]}】！`);
         updateUI();
     }
 
-    // 初始化
-    updateUI();
-    log("存档已自动加载，继续你的修仙之旅吧！");
-</script>
+    // 5. 生活技能
+    function craftPill() {
+        if (state.bag["灵草"] < 3) { log("❌ 灵草不足（需要3）"); return; }
+        state.bag["灵草"] -= 3;
+        state.bag["回春丹"]++;
+        log("🔥 炉火纯青，炼制出【回春丹】x1！");
+        // 自动使用一颗回血（简化操作）
+        if (state.hp < state.maxHp) {
+            state.bag["回春丹"]--;
+            state.hp = Math.min(state.maxHp, state.hp + 50);
+            log("💊 顺手服下一颗，恢复 50 气血。");
+        }
+        updateUI();
+    }
 
+    function craftWeapon() {
+        if (state.bag["玄铁"] < 3) { log("❌ 玄铁不足（需要3）"); return; }
+        state.bag["玄铁"] -= 3;
+        state.equipAtk += 5;
+        log("🔨 叮！锻造成功，攻击力永久 +5！");
+        updateUI();
+    }
+
+    // ==================== 初始化 ====================
+    updateUI();
+</script>
 </body>
 </html>
