@@ -3,415 +3,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极简文字修仙：全能版</title>
+    <title>急招外卖配送员 | 月入过万不是梦</title>
     <style>
-        :root { --primary: #d35400; --bg: #f4f4f9; --card: #fff; --dark: #2c3e50; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
-        body { background: var(--bg); color: #333; display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
-        
-        .game-container { width: 100%; max-width: 480px; background: var(--card); border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 90vh; }
-        
-        /* 顶部信息栏 */
-        .header { padding: 15px; background: var(--dark); color: #fff; text-align: center; }
-        .header h1 { font-size: 18px; margin-bottom: 5px; }
-        .stats-row { display: flex; justify-content: space-around; font-size: 12px; opacity: 0.9; }
-        
-        /* 标签页导航 */
-        .tabs { display: flex; background: #eee; border-bottom: 1px solid #ddd; }
-        .tab-btn { flex: 1; padding: 10px 0; border: none; background: none; cursor: pointer; font-size: 13px; color: #666; transition: all 0.2s; }
-        .tab-btn.active { background: var(--card); color: var(--primary); font-weight: bold; border-bottom: 2px solid var(--primary); }
-        
-        /* 内容区域 */
-        .content { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .panel { display: none; flex-direction: column; gap: 10px; }
-        .panel.active { display: flex; }
-        
-        /* 通用卡片样式 */
-        .card { background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.5; }
-        .card-title { font-weight: bold; color: var(--primary); margin-bottom: 5px; display: flex; justify-content: space-between; }
-        
-        /* 按钮组 */
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-        button { padding: 8px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; color: #fff; transition: opacity 0.2s; }
-        button:hover { opacity: 0.85; }
-        button:disabled { background: #ccc !important; cursor: not-allowed; }
-        .btn-primary { background: #3498db; }
-        .btn-success { background: #2ecc71; }
-        .btn-danger { background: #e74c3c; }
-        .btn-warning { background: #f39c12; }
-        .btn-purple { background: #9b59b6; }
-        
-        /* 日志区 */
-        .log-area { height: 120px; background: var(--dark); color: #ecf0f1; padding: 10px; border-radius: 8px; font-size: 12px; line-height: 1.6; overflow-y: auto; margin-top: auto; }
-        
-        /* 进度条 */
-        .progress-wrap { height: 16px; background: #e0e0e0; border-radius: 8px; overflow: hidden; position: relative; margin: 5px 0; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #f39c12, #e67e22); transition: width 0.3s; }
-        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10px; font-weight: bold; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        /* --- 全局重置与变量 --- */
+        :root {
+            --primary: #FF6B35; /* 活力橙 */
+            --primary-dark: #E55A2B;
+            --dark: #1A1A1A;
+            --gray: #666;
+            --light-bg: #F9F9F9;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
 
-        /* 列表项 */
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #fff; border: 1px solid #eee; border-radius: 6px; font-size: 12px; }
-        .list-item span { color: #888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            color: var(--dark); 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- 导航栏 --- */
+        nav {
+            position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px); z-index: 1000; padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+        .nav-btn {
+            background: var(--primary); color: #fff; padding: 8px 20px;
+            border-radius: 20px; font-weight: 600; transition: 0.3s;
+        }
+        .nav-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        /* --- Hero 区域 --- */
+        .hero {
+            padding: 140px 0 80px; 
+            background: linear-gradient(135deg, #FFF5F0 0%, #FFE4D6 100%);
+            position: relative; overflow: hidden;
+        }
+        .hero::after {
+            content: '🛵'; position: absolute; right: -50px; bottom: -20px;
+            font-size: 200px; opacity: 0.1; transform: rotate(-15deg);
+        }
+        .hero-content { max-width: 600px; position: relative; z-index: 1; }
+        .badge { 
+            display: inline-block; background: #FFF; color: var(--primary); 
+            padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; 
+            font-weight: 700; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(255,107,53,0.2);
+        }
+        h1 { font-size: 3rem; line-height: 1.2; margin-bottom: 20px; }
+        h1 span { color: var(--primary); position: relative; }
+        .hero-desc { font-size: 1.2rem; color: var(--gray); margin-bottom: 30px; }
+        .cta-group { display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn-main {
+            background: var(--primary); color: #fff; padding: 15px 35px;
+            border-radius: 30px; font-size: 1.1rem; font-weight: 700;
+            box-shadow: 0 8px 20px rgba(255,107,53,0.4); transition: 0.3s; border: none; cursor: pointer;
+        }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(255,107,53,0.5); }
+        .btn-sub {
+            background: #fff; color: var(--dark); padding: 15px 35px;
+            border-radius: 30px; font-size: 1.1rem; font-weight: 700;
+            border: 2px solid #eee; transition: 0.3s; cursor: pointer;
+        }
+
+        /* --- 数据看板 --- */
+        .stats {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-top: -40px; position: relative; z-index: 2; margin-bottom: 60px;
+        }
+        .stat-card {
+            background: #fff; padding: 30px; border-radius: 15px; text-align: center;
+            box-shadow: var(--card-shadow); transition: 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-num { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+        .stat-label { color: var(--gray); font-size: 0.9rem; margin-top: 5px; }
+
+        /* --- 互动计算器 --- */
+        .calculator {
+            background: var(--dark); color: #fff; padding: 60px 0; border-radius: 0;
+        }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        .calc-input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; opacity: 0.8; font-size: 0.9rem; }
+        input[type=range] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+        .range-val { float: right; font-weight: 700; color: var(--primary); }
+        
+        .result-box {
+            background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px;
+            text-align: center; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .result-price { font-size: 3.5rem; font-weight: 800; color: var(--primary); margin: 10px 0; }
+        .result-note { font-size: 0.9rem; opacity: 0.7; }
+
+        /* --- 优势列表 --- */
+        .features { padding: 80px 0; background: var(--light-bg); }
+        .section-title { text-align: center; font-size: 2rem; margin-bottom: 50px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .feature-card {
+            background: #fff; padding: 30px; border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: 0.3s;
+            opacity: 0; transform: translateY(20px); /* 初始状态用于动画 */
+        }
+        .feature-card.visible { opacity: 1; transform: translateY(0); }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 15px; }
+        .feature-card h3 { margin-bottom: 10px; font-size: 1.2rem; }
+        .feature-card p { color: var(--gray); font-size: 0.95rem; }
+
+        /* --- 报名表单 --- */
+        .apply-section { padding: 80px 0; }
+        .form-wrapper { max-width: 500px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 20px; box-shadow: var(--card-shadow); }
+        .form-group { margin-bottom: 20px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px;
+            font-size: 1rem; outline: none; transition: 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+        .submit-btn { width: 100%; padding: 18px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .submit-btn:hover { background: var(--primary-dark); }
+        .msg { text-align: center; margin-top: 15px; font-weight: 600; height: 20px; }
+
+        /* --- 响应式 --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .calc-grid { grid-template-columns: 1fr; }
+            .hero::after { font-size: 120px; right: -30px; }
+            .result-price { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <div class="header">
-        <h1>⚔️ 极简文字修仙</h1>
-        <div class="stats-row">
-            <span id="ui-realm">炼气一层</span>
-            <span id="ui-hp">气血: 100/100</span>
-            <span id="ui-atk">攻: 10</span>
-            <span id="ui-def">防: 5</span>
+    <!-- 导航 -->
+    <nav>
+        <div class="container nav-inner">
+            <div class="logo">⚡ 极速达配送</div>
+            <a href="#apply-form" class="nav-btn">立即报名</a>
         </div>
-        <div class="progress-wrap" style="margin-top:8px;">
-            <div class="progress-bar" id="ui-exp-bar" style="width:0%"></div>
-            <div class="progress-text" id="ui-exp-text">0 / 100</div>
-        </div>
-    </div>
+    </nav>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('main')">修炼</button>
-        <button class="tab-btn" onclick="switchTab('craft')">炼制</button>
-        <button class="tab-btn" onclick="switchTab('bag')">背包</button>
-        <button class="tab-btn" onclick="switchTab('bestiary')">图鉴</button>
-    </div>
-
-    <div class="content">
-        <!-- 主界面 -->
-        <div id="panel-main" class="panel active">
-            <div class="card">
-                <div class="card-title">洞府修炼</div>
-                <p>盘膝而坐，吞吐天地灵气。</p>
-                <div class="btn-group">
-                    <button class="btn-primary" id="btn-cultivate" onclick="toggleCultivate()">开始打坐</button>
-                    <button class="btn-success" onclick="explore()">探索秘境</button>
-                </div>
-                <div class="btn-group" style="margin-top:5px;">
-                    <button class="btn-purple" id="btn-breakthrough" onclick="breakthrough()" disabled>尝试突破</button>
-                    <button class="btn-danger" onclick="resetGame()" style="font-size:11px; opacity:0.8;">重置存档</button>
-                </div>
-            </div>
-            <div class="card" id="combat-panel" style="display:none; border-color:#e74c3c;">
-                <div class="card-title" style="color:#e74c3c;">⚔️ 战斗进行中</div>
-                <p id="combat-info"></p>
-                <div class="btn-group">
-                    <button class="btn-danger" onclick="playerAttack()">普通攻击</button>
-                    <button class="btn-warning" onclick="tryCapture()">尝试捕捉</button>
-                </div>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container hero-content">
+            <span class="badge">🔥 本周入职奖励 ¥500</span>
+            <h1>跑单自由，<br><span>月入过万</span>不是梦</h1>
+            <p class="hero-desc">时间你定，路线你选。全城就近分配站点，新手老手都有专人带，装备免费领！</p>
+            <div class="cta-group">
+                <a href="#apply-form"><button class="btn-main">我要赚钱 💰</button></a>
+                <a href="#calculator"><button class="btn-sub">计算我的收入 🧮</button></a>
             </div>
         </div>
+    </section>
 
-        <!-- 炼制界面 -->
-        <div id="panel-craft" class="panel">
-            <div class="card">
-                <div class="card-title">🧪 炼丹炉</div>
-                <p>消耗 3 株【灵草】炼制【回春丹】</p>
-                <p style="font-size:11px; color:#888;">效果：恢复 50 气血，或作为突破辅助</p>
-                <button class="btn-success" style="width:100%; margin-top:8px;" onclick="craftPill()">开炉炼丹</button>
-            </div>
-            <div class="card">
-                <div class="card-title">🔨 炼器台</div>
-                <p>消耗 3 块【玄铁】锻造【精铁剑】</p>
-                <p style="font-size:11px; color:#888;">效果：永久增加 5 点攻击力</p>
-                <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="craftWeapon()">挥锤锻造</button>
-            </div>
+    <!-- 数据统计 -->
+    <div class="container stats">
+        <div class="stat-card">
+            <div class="stat-num" id="counter1">0</div>
+            <div class="stat-label">在职骑手</div>
         </div>
-
-        <!-- 背包界面 -->
-        <div id="panel-bag" class="panel">
-            <div class="card">
-                <div class="card-title">🎒 物品栏</div>
-                <div id="bag-list" style="display:flex; flex-direction:column; gap:5px; margin-top:8px;"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">🗡️ 当前装备</div>
-                <div id="equip-info" style="font-size:12px; color:#666;">无</div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-num">¥<span id="counter2">0</span></div>
+            <div class="stat-label">平均月薪</div>
         </div>
-
-        <!-- 图鉴界面 -->
-        <div id="panel-bestiary" class="panel">
-            <div class="card">
-                <div class="card-title">📖 妖兽图鉴 (<span id="bestiary-count">0</span>/5)</div>
-                <div id="bestiary-list" style="display:flex; flex-direction:column; gap:5px; margin-top:8px;"></div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-num" id="counter3">0%</div>
+            <div class="stat-label">准时送达率</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">24H</div>
+            <div class="stat-label">提现到账</div>
         </div>
     </div>
 
-    <div class="log-area" id="logArea">系统：欢迎道友，点击【探索秘境】开启机缘！</div>
-</div>
+    <!-- 收入计算器 -->
+    <section class="calculator" id="calculator">
+        <div class="container calc-grid">
+            <div>
+                <h2 style="font-size:2rem; margin-bottom:20px;">💸 收入模拟器</h2>
+                <p style="opacity:0.8; margin-bottom:30px;">拖动滑块，看看你的努力能换回多少回报？</p>
+                
+                <div class="calc-input-group">
+                    <label>每日在线时长 <span class="range-val" id="hoursVal">8小时</span></label>
+                    <input type="range" id="hours" min="2" max="14" value="8">
+                </div>
+                <div class="calc-input-group">
+                    <label>每月出勤天数 <span class="range-val" id="daysVal">26天</span></label>
+                    <input type="range" id="days" min="10" max="30" value="26">
+                </div>
+                <div class="calc-input-group">
+                    <label>熟练度等级 <span class="range-val" id="skillVal">普通</span></label>
+                    <input type="range" id="skill" min="1" max="3" value="2">
+                </div>
+            </div>
+            <div class="result-box">
+                <div style="font-size:1rem; opacity:0.8;">预估月收入</div>
+                <div class="result-price" id="resultPrice">¥0</div>
+                <div class="result-note">* 基于当前城市平均单价测算，实际以平台结算为准</div>
+                <a href="#apply-form"><button class="btn-main" style="margin-top:20px; width:100%;">按这个标准入职</button></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 为什么选择我们 -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">四大保障，让你跑得安心</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⏰</div>
+                    <h3>时间自由</h3>
+                    <p>想跑就跑，想休就休。全职兼职随意切换，不压工资。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>保险护航</h3>
+                    <p>每日自动扣除意外险，最高赔付50万，家人更放心。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3>新手培训</h3>
+                    <p>老司机一对一教路线、教沟通，3天上手，7天成为单王。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎁</div>
+                    <h3>装备免费</h3>
+                    <p>头盔、餐箱、雨衣全套配齐，入职即领，无需押金。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 报名表单 -->
+    <section class="apply-section" id="apply-form">
+        <div class="container">
+            <h2 class="section-title">30秒快速报名</h2>
+            <div class="form-wrapper">
+                <form id="recruitForm">
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder="您的姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="phone" placeholder="手机号码" required pattern="[0-9]{11}">
+                    </div>
+                    <div class="form-group">
+                        <select id="district" required>
+                            <option value="" disabled selected>期望跑单区域</option>
+                            <option>朝阳区</option>
+                            <option>海淀区</option>
+                            <option>丰台区</option>
+                            <option>通州区</option>
+                            <option>其他区域</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select id="exp">
+                            <option value="new">我是新手</option>
+                            <option value="old">我有经验</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">提交申请 🚀</button>
+                    <div class="msg" id="formMsg"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer style="text-align:center; padding:30px; color:#999; font-size:0.8rem;">
+        © 2024 极速达配送招聘中心 | 本页面仅供演示
+    </footer>
 
 <script>
-    // ==================== 配置与常量 ====================
-    const SAVE_KEY = 'xiuxian_full_save';
-    const REALMS = ["炼气一层", "炼气二层", "筑基期", "金丹期"];
-    const MONSTERS = [
-        { name: "灵田鼠", hp: 30, atk: 5, exp: 10, drop: "灵草", rate: 0.8 },
-        { name: "铁皮猪", hp: 60, atk: 8, exp: 20, drop: "玄铁", rate: 0.6 },
-        { name: "风刃狼", hp: 100, atk: 15, exp: 40, drop: "灵草", rate: 0.4 },
-        { name: "赤炎蟒", hp: 180, atk: 25, exp: 80, drop: "玄铁", rate: 0.2 },
-        { name: "幽冥鬼将", hp: 300, atk: 40, exp: 150, drop: "灵草", rate: 0.1 }
-    ];
+    // --- 1. 数字滚动动画 ---
+    function animateCounter(el, target, suffix = '') {
+        let current = 0;
+        const step = target / 60; // 60帧左右完成
+        const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            el.innerText = Math.floor(current).toLocaleString() + suffix;
+        }, 16);
+    }
 
-    // ==================== 状态管理 ====================
-    const defaultState = {
-        realmIndex: 0, exp: 0, maxExp: 100,
-        baseAtk: 10, baseDef: 5, hp: 100, maxHp: 100,
-        isCultivating: false,
-        bag: { "灵草": 0, "玄铁": 0, "回春丹": 0 },
-        equipAtk: 0, equipDef: 0,
-        bestiary: [], // 存储已捕获妖兽的名字
-        combat: null // 当前战斗对象 { monster, currentHp }
+    // 页面加载后触发统计数字
+    window.onload = () => {
+        animateCounter(document.getElementById('counter1'), 12580, '+');
+        animateCounter(document.getElementById('counter2'), 9800);
+        animateCounter(document.getElementById('counter3'), 99, '%');
     };
 
-    let state = loadGame();
-    let cultivateTimer = null;
+    // --- 2. 收入计算器逻辑 ---
+    const hoursSlider = document.getElementById('hours');
+    const daysSlider = document.getElementById('days');
+    const skillSlider = document.getElementById('skill');
+    const resultEl = document.getElementById('resultPrice');
 
-    // ==================== 核心工具函数 ====================
-    function getAtk() { return state.baseAtk + state.equipAtk; }
-    function getDef() { return state.baseDef + state.equipDef; }
-
-    function log(msg) {
-        const el = document.getElementById('logArea');
-        el.innerHTML += `<div>${new Date().toLocaleTimeString().slice(0,5)} ${msg}</div>`;
-        el.scrollTop = el.scrollHeight;
-    }
-
-    function saveGame() {
-        try {
-            const data = JSON.parse(JSON.stringify(state));
-            data.isCultivating = false; // 不保存挂机状态
-            localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-        } catch(e) { console.error(e); }
-    }
-
-    function loadGame() {
-        try {
-            const d = localStorage.getItem(SAVE_KEY);
-            return d ? { ...defaultState, ...JSON.parse(d) } : { ...defaultState };
-        } catch(e) { return { ...defaultState }; }
-    }
-
-    function resetGame() {
-        if(confirm("确定要废除修为，重入轮回吗？")) {
-            localStorage.removeItem(SAVE_KEY);
-            location.reload();
-        }
-    }
-
-    // ==================== UI 渲染引擎 ====================
-    function updateUI() {
-        // 基础属性
-        document.getElementById('ui-realm').textContent = REALMS[state.realmIndex];
-        document.getElementById('ui-hp').textContent = `气血: ${state.hp}/${state.maxHp}`;
-        document.getElementById('ui-atk').textContent = `攻: ${getAtk()}`;
-        document.getElementById('ui-def').textContent = `防: ${getDef()}`;
+    function updateCalc() {
+        const h = parseInt(hoursSlider.value);
+        const d = parseInt(daysSlider.value);
+        const s = parseInt(skillSlider.value);
         
-        // 经验条
-        const pct = Math.min((state.exp / state.maxExp) * 100, 100).toFixed(1);
-        document.getElementById('ui-exp-bar').style.width = `${pct}%`;
-        document.getElementById('ui-exp-text').textContent = `${state.exp} / ${state.maxExp}`;
-        document.getElementById('btn-breakthrough').disabled = state.exp < state.maxExp;
+        // 更新显示文本
+        document.getElementById('hoursVal').innerText = h + '小时';
+        document.getElementById('daysVal').innerText = d + '天';
+        const skillNames = ['', '新手', '普通', '单王'];
+        document.getElementById('skillVal').innerText = skillNames[s];
 
-        // 挂机按钮
-        const btnCult = document.getElementById('btn-cultivate');
-        btnCult.textContent = state.isCultivating ? "停止打坐" : "开始打坐";
-        btnCult.className = state.isCultivating ? "btn-danger" : "btn-primary";
+        // 简单算法：每小时单量 * 单价 * 时长 * 天数 * 熟练系数
+        const ordersPerHour = 2.5 + (s * 0.8); // 新手2.5单/h，单王4.1单/h
+        const pricePerOrder = 6.5; // 假设均价
+        const coeff = 0.9 + (s * 0.1); // 熟练度带来的额外奖励系数
+        
+        const total = Math.floor(ordersPerHour * pricePerOrder * h * d * coeff);
+        
+        // 简单的数字跳动效果
+        resultEl.style.transform = 'scale(1.1)';
+        resultEl.innerText = '¥' + total.toLocaleString();
+        setTimeout(() => resultEl.style.transform = 'scale(1)', 200);
+    }
 
-        // 战斗面板
-        const combatPanel = document.getElementById('combat-panel');
-        if (state.combat) {
-            combatPanel.style.display = 'block';
-            document.getElementById('combat-info').textContent = 
-                `${state.combat.name} (HP: ${state.combat.currentHp}) | 你 (HP: ${state.hp})`;
-        } else {
-            combatPanel.style.display = 'none';
-        }
+    [hoursSlider, daysSlider, skillSlider].forEach(el => {
+        el.addEventListener('input', updateCalc);
+    });
+    updateCalc(); // 初始化
 
-        // 背包渲染
-        const bagList = document.getElementById('bag-list');
-        bagList.innerHTML = '';
-        for (const [item, count] of Object.entries(state.bag)) {
-            bagList.innerHTML += `<div class="list-item"><span>${item}</span><span>x${count}</span></div>`;
-        }
-        document.getElementById('equip-info').textContent = 
-            state.equipAtk > 0 ? `精铁剑 (攻击+${state.equipAtk})` : "无装备";
-
-        // 图鉴渲染
-        const bList = document.getElementById('bestiary-list');
-        bList.innerHTML = '';
-        document.getElementById('bestiary-count').textContent = state.bestiary.length;
-        MONSTERS.forEach(m => {
-            const found = state.bestiary.includes(m.name);
-            bList.innerHTML += `<div class="list-item" style="opacity:${found?1:0.4}">
-                <span>${found ? m.name : "???"}</span>
-                <span>${found ? `攻:${m.atk} 掉:${m.drop}` : "未收录"}</span>
-            </div>`;
+    // --- 3. 滚动渐入动画 (Intersection Observer) ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
         });
+    }, { threshold: 0.1 });
 
-        saveGame();
-    }
+    document.querySelectorAll('.feature-card').forEach(card => observer.observe(card));
 
-    function switchTab(tabName) {
-        document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(`panel-${tabName}`).classList.add('active');
-        event.target.classList.add('active');
-        updateUI();
-    }
+    // --- 4. 表单处理 ---
+    document.getElementById('recruitForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = this.querySelector('.submit-btn');
+        const msg = document.getElementById('formMsg');
+        const phone = document.getElementById('phone').value;
 
-    // ==================== 玩法逻辑 ====================
-
-    // 1. 挂机修炼
-    function toggleCultivate() {
-        if (state.combat) { log("战斗中无法打坐！"); return; }
-        state.isCultivating = !state.isCultivating;
-        if (state.isCultivating) {
-            log("你进入忘我之境，灵气汇聚...");
-            cultivateTimer = setInterval(() => {
-                state.exp += 5;
-                if (state.exp >= state.maxExp) {
-                    state.exp = state.maxExp;
-                    log("✨ 修为圆满，可以尝试突破了！");
-                    toggleCultivate();
-                }
-                updateUI();
-            }, 1000);
-        } else {
-            clearInterval(cultivateTimer);
-            log("你退出修炼状态。");
+        // 简单手机号校验
+        if (!/^1[3-9]\d{9}$/.test(phone)) {
+            msg.style.color = '#e74c3c';
+            msg.innerText = '请输入正确的11位手机号';
+            return;
         }
-        updateUI();
-    }
 
-    // 2. 探索与遇敌
-    function explore() {
-        if (state.isCultivating || state.combat) {
-            log("当前状态无法探索！"); return;
-        }
+        // 模拟提交
+        btn.disabled = true;
+        btn.innerText = '提交中...';
         
-        // 随机事件权重
-        const rand = Math.random();
-        if (rand < 0.5) {
-            // 遇怪 (根据境界调整概率)
-            const availableMonsters = MONSTERS.filter((_, i) => i <= state.realmIndex + 1);
-            const monster = availableMonsters[Math.floor(Math.random() * availableMonsters.length)];
-            state.combat = { ...monster, currentHp: monster.hp };
-            log(`⚠️ 你在秘境中遭遇了【${monster.name}】！`);
-        } else if (rand < 0.8) {
-            // 捡材料
-            const items = ["灵草", "玄铁"];
-            const item = items[Math.floor(Math.random() * items.length)];
-            state.bag[item]++;
-            log(`🍀 运气不错，捡到了一株【${item}】。`);
-        } else {
-            log("🌬️ 秘境一片荒芜，只吹过一阵冷风。");
-        }
-        updateUI();
-    }
+        setTimeout(() => {
+            msg.style.color = '#2ecc71';
+            msg.innerText = '✅ 报名成功！站长会在24小时内联系您';
+            btn.innerText = '已提交';
+            btn.style.background = '#ccc';
+        }, 1000);
+    });
 
-    // 3. 战斗系统
-    function playerAttack() {
-        if (!state.combat) return;
-        const dmg = Math.max(1, getAtk() - Math.floor(state.combat.atk * 0.2)); // 简单减伤
-        state.combat.currentHp -= dmg;
-        log(`你挥出一击，造成 ${dmg} 点伤害！`);
-
-        if (state.combat.currentHp <= 0) {
-            endCombat(true);
-        } else {
-            // 怪物反击
-            const monDmg = Math.max(1, state.combat.atk - getDef());
-            state.hp -= monDmg;
-            log(`${state.combat.name} 反击，你受到 ${monDmg} 点伤害。`);
-            if (state.hp <= 0) endCombat(false);
-        }
-        updateUI();
-    }
-
-    function tryCapture() {
-        if (!state.combat) return;
-        const hpRatio = state.combat.currentHp / state.combat.hp;
-        const chance = (1 - hpRatio) * 0.8 + 0.1; // 血越少越好抓
-        
-        if (Math.random() < chance) {
-            log(`🎉 成功捕获【${state.combat.name}】！已录入图鉴。`);
-            if (!state.bestiary.includes(state.combat.name)) {
-                state.bestiary.push(state.combat.name);
-            }
-            endCombat(true, true); // 捕获视为胜利
-        } else {
-            log("❌ 捕捉失败！妖兽挣脱了绳索。");
-            // 失败后怪物必反击
-            const monDmg = Math.max(1, state.combat.atk - getDef());
-            state.hp -= monDmg;
-            log(`${state.combat.name} 趁机攻击，你受到 ${monDmg} 点伤害。`);
-            if (state.hp <= 0) endCombat(false);
-        }
-        updateUI();
-    }
-
-    function endCombat(win, captured = false) {
-        if (win) {
-            state.exp += state.combat.exp;
-            log(`✅ 战斗胜利！获得修为 ${state.combat.exp}。`);
-            // 掉落材料
-            if (Math.random() < state.combat.rate) {
-                state.bag[state.combat.drop]++;
-                log(`🎁 获得战利品：【${state.combat.drop}】`);
-            }
-        } else {
-            log("💀 你被击败了... 幸好有护身玉符，勉强逃回洞府。");
-            state.hp = Math.floor(state.maxHp * 0.5); // 复活给一半血
-        }
-        state.combat = null;
-        updateUI();
-    }
-
-    // 4. 突破
-    function breakthrough() {
-        if (state.exp < state.maxExp || state.combat) return;
-        if (state.realmIndex >= REALMS.length - 1) {
-            log("🏆 你已是当世巅峰，无需再突破！"); return;
-        }
-        state.realmIndex++;
-        state.exp = 0;
-        state.maxExp = Math.floor(state.maxExp * 2);
-        state.baseAtk += 10;
-        state.baseDef += 5;
-        state.maxHp += 50;
-        state.hp = state.maxHp; // 突破满血
-        log(`🌟 天降异象！恭喜突破至【${REALMS[state.realmIndex]}】！`);
-        updateUI();
-    }
-
-    // 5. 生活技能
-    function craftPill() {
-        if (state.bag["灵草"] < 3) { log("❌ 灵草不足（需要3）"); return; }
-        state.bag["灵草"] -= 3;
-        state.bag["回春丹"]++;
-        log("🔥 炉火纯青，炼制出【回春丹】x1！");
-        // 自动使用一颗回血（简化操作）
-        if (state.hp < state.maxHp) {
-            state.bag["回春丹"]--;
-            state.hp = Math.min(state.maxHp, state.hp + 50);
-            log("💊 顺手服下一颗，恢复 50 气血。");
-        }
-        updateUI();
-    }
-
-    function craftWeapon() {
-        if (state.bag["玄铁"] < 3) { log("❌ 玄铁不足（需要3）"); return; }
-        state.bag["玄铁"] -= 3;
-        state.equipAtk += 5;
-        log("🔨 叮！锻造成功，攻击力永久 +5！");
-        updateUI();
-    }
-
-    // ==================== 初始化 ====================
-    updateUI();
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
 </script>
+
 </body>
 </html>
